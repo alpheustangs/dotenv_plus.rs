@@ -1,0 +1,35 @@
+[package]
+name = "dotenv_plus"
+version = "0.1.0"
+authors = ["Alpheus Tang"]
+edition = "2021"
+description = """
+A dotenv extension for Rust
+"""
+readme = "README.md"
+homepage = "https://github.com/alpheustangs/dotenv_plus.rs"
+repository = "https://github.com/alpheustangs/dotenv_plus.rs"
+license = "MIT"
+keywords = [
+    "dotenv_plus",
+    "dotenv",
+    "extension",
+    "env",
+    "util",
+]
+categories = [
+    "config",
+    "filesystem"
+]
+include = [
+    "src/*", 
+    "Cargo.toml",
+    "README.md",
+]
+
+[lib]
+name = "dotenv_plus"
+path = "src/lib.rs"
+
+[dependencies]
+dotenvy = "0.15.7"

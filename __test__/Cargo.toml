@@ -1,0 +1,12 @@
+[package]
+name = "__test__"
+edition = "2021"
+publish = false
+
+[features]
+dev = []
+test = []
+prd = []
+
+[dependencies]
+dotenv_plus = { workspace = true }
