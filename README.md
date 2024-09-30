@@ -12,8 +12,7 @@ cargo add dotenv_plus
 
 ## Quick Start
 
-Initialize the environment variables 
-and get different variables with the following code:
+Initialize the environment variables and get different variables with the following code:
 
 ```rust
 use dotenv_plus::{
@@ -29,5 +28,4 @@ assert_eq!(get_env("key"), "value");
 
 ## License
 
-This project is MIT licensed, 
-you can find the license file [here](./LICENSE).
+This project is MIT licensed, you can find the license file [here](./LICENSE).
