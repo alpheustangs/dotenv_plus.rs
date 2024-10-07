@@ -34,7 +34,7 @@ pub fn get_vars() -> Vec<(String, String)> {
 
 /// Get environment variable,
 /// and have to handle the error manually.
-/// Use `var` if you want an automatic handling.
+/// Use [`var`] if you want an automatic handling.
 ///
 /// ## Example
 ///
@@ -49,7 +49,7 @@ pub fn get_var(name: &str) -> Result<String, VarError> {
 
 /// Get environment variable as string,
 /// and panic if the environment variable is missing.
-/// Use `get_var` if you want to handle the error manually.
+/// Use [`get_var`] if you want to handle the error manually.
 ///
 /// ## Example
 ///

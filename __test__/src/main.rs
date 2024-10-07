@@ -31,7 +31,10 @@ mod tests {
     use std::env::current_dir;
 
     use dotenv_plus::{
-        common::{get_rust_env, is_dev, is_prd, is_test},
+        common::{
+            get_rust_env, is_dev, is_environment_development,
+            is_environment_production, is_environment_test, is_prd, is_test,
+        },
         env::{DotEnv, Environment},
         var::{get_var, var},
     };
@@ -44,8 +47,11 @@ mod tests {
             .done();
 
         assert_eq!(get_rust_env(), "test");
+        assert_eq!(is_environment_development(), false);
         assert_eq!(is_dev(), false);
+        assert_eq!(is_environment_test(), true);
         assert_eq!(is_test(), true);
+        assert_eq!(is_environment_production(), false);
         assert_eq!(is_prd(), false);
 
         assert_eq!(get_var("A").unwrap(), ".env");

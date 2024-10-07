@@ -62,7 +62,15 @@ pub mod env {
 
 /// Common functions
 pub mod common {
-    pub use crate::internal::common::vars::{
-        get_rust_env, is_dev, is_prd, is_test,
+    // base
+    pub use crate::internal::common::get_rust_env;
+
+    // environment
+    pub use crate::internal::common::{
+        is_environment_development, is_environment_production,
+        is_environment_test,
     };
+
+    // environment aliases
+    pub use crate::internal::common::{is_dev, is_prd, is_test};
 }
