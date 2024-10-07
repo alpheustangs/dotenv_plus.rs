@@ -14,7 +14,6 @@ keywords = [
     "dotenv_plus",
     "dotenv",
     "extension",
-    "environment",
     "env",
     "util",
 ]
