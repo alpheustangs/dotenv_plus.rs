@@ -15,7 +15,7 @@ pub fn is_environment_development() -> bool {
     get_rust_env() == Environment::Development.to_string()
 }
 
-/// alias of [`is_environment_development`].
+/// Alias of [`is_environment_development`].
 pub fn is_dev() -> bool {
     is_environment_development()
 }
@@ -25,7 +25,7 @@ pub fn is_environment_test() -> bool {
     get_rust_env() == Environment::Test.to_string()
 }
 
-/// alias of [`is_environment_test`].
+/// Alias of [`is_environment_test`].
 pub fn is_test() -> bool {
     is_environment_test()
 }
@@ -35,7 +35,7 @@ pub fn is_environment_production() -> bool {
     get_rust_env() == Environment::Production.to_string()
 }
 
-/// alias of [`is_environment_production`].
+/// Alias of [`is_environment_production`].
 pub fn is_prd() -> bool {
     is_environment_production()
 }

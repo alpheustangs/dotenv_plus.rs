@@ -5,10 +5,21 @@ use dotenvy::from_path_override as env_from;
 use crate::internal::utils::var::set_var;
 
 /// Rust Environment
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Environment {
     Development,
     Test,
     Production,
+}
+
+impl Environment {
+    pub fn as_str(&self) -> &str {
+        match self {
+            | Self::Development => "development",
+            | Self::Test => "test",
+            | Self::Production => "production",
+        }
+    }
 }
 
 impl Display for Environment {
@@ -16,25 +27,23 @@ impl Display for Environment {
         &self,
         f: &mut std::fmt::Formatter<'_>,
     ) -> std::fmt::Result {
-        match self {
-            | Environment::Development => write!(f, "development"),
-            | Environment::Test => write!(f, "test"),
-            | Environment::Production => write!(f, "production"),
-        }
+        write!(f, "{}", self.as_str())
     }
 }
 
-struct DotEnvState {
+#[derive(Debug, Clone)]
+struct DotEnvState<'a> {
     dir: PathBuf,
-    environment: String,
+    environment: &'a str,
 }
 
 /// Options for DotEnv initialization
-pub struct DotEnvOptions {
-    state: DotEnvState,
+#[derive(Debug, Clone)]
+pub struct DotEnvOptions<'a> {
+    state: DotEnvState<'a>,
 }
 
-impl DotEnvOptions {
+impl<'a> DotEnvOptions<'a> {
     /// Set the directory of the `.env` file.
     ///
     /// ## Example
@@ -63,14 +72,13 @@ impl DotEnvOptions {
     /// use dotenv_plus::env::{DotEnv, Environment};
     ///
     /// DotEnv::init()
-    ///     .environment(Environment::Development.to_string())
+    ///     .environment(Environment::Development.as_str())
     ///     .done();
     /// ```
     pub fn environment(
         mut self,
-        environment: String,
+        environment: &'a str,
     ) -> Self {
-        Environment::Development.to_string();
         self.state.environment = environment;
         self
     }
@@ -114,14 +122,15 @@ impl DotEnvOptions {
 ///
 /// DotEnv::init().done();
 /// ```
+#[derive(Debug, Clone)]
 pub struct DotEnv;
 
 impl DotEnv {
-    pub fn init() -> DotEnvOptions {
+    pub fn init<'a>() -> DotEnvOptions<'a> {
         DotEnvOptions {
             state: DotEnvState {
                 dir: current_dir().unwrap(),
-                environment: "development".to_string(),
+                environment: "development",
             },
         }
     }

@@ -1,3 +1,19 @@
+## 0.3.0 (2024-10-13)
+
+### Breaking Changes
+
+- Changes in accepted value type of `environment` in `DotEnv::init()`:
+    - `String` => `&str`
+
+### What's New
+
+- Add different derives for different structs
+- Add `as_str` function for `Environment` enum
+
+### What's Changed
+
+- Updates in documentation
+
 ## 0.2.0 (2024-10-07)
 
 ### What's New
@@ -9,7 +25,7 @@
 
 ### What's Changed
 
-- Update documentations
+- Updates in documentation
 
 ## 0.1.0 (2024-09-27)
 

@@ -17,7 +17,7 @@ fn main() {
 
     DotEnv::init()
         .dir(current_dir().unwrap())
-        .environment(environment.to_string())
+        .environment(environment.as_str())
         .done();
 
     println!("Rust environment: {}", get_rust_env());
@@ -43,7 +43,7 @@ mod tests {
     fn main() {
         DotEnv::init()
             .dir(current_dir().unwrap())
-            .environment(Environment::Test.to_string())
+            .environment(Environment::Test.as_str())
             .done();
 
         assert_eq!(get_rust_env(), "test");
