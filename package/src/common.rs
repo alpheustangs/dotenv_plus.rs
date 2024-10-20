@@ -1,4 +1,4 @@
-use crate::internal::utils::{env::Environment, var::get_var};
+use crate::{env::Environment, var::get_var};
 
 /// Get the current environment with `RUST_ENV`.
 pub fn get_rust_env() -> String {

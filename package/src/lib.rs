@@ -48,29 +48,11 @@
 //! assert_eq!(var("key"), "value");
 //! ```
 
-mod internal;
+/// Dotenv process related functions
+pub mod env;
 
 /// Read and write environment variables in the current process.
-pub mod var {
-    pub use crate::internal::utils::var::{get_var, get_vars, set_var, var};
-}
-
-/// Dotenv process related functions
-pub mod env {
-    pub use crate::internal::utils::env::{DotEnv, DotEnvOptions, Environment};
-}
+pub mod var;
 
 /// Common functions
-pub mod common {
-    // base
-    pub use crate::internal::common::get_rust_env;
-
-    // environment
-    pub use crate::internal::common::{
-        is_environment_development, is_environment_production,
-        is_environment_test,
-    };
-
-    // environment aliases
-    pub use crate::internal::common::{is_dev, is_prd, is_test};
-}
+pub mod common;

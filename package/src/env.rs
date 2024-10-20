@@ -2,7 +2,7 @@ use std::{env::current_dir, fmt::Display, path::PathBuf};
 
 use dotenvy::from_path_override as env_from;
 
-use crate::internal::utils::var::set_var;
+use crate::var::set_var;
 
 /// Rust Environment
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
