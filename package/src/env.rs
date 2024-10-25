@@ -1,4 +1,8 @@
-use std::{env::current_dir, fmt::Display, path::PathBuf};
+use std::{
+    env::current_dir,
+    fmt::Display,
+    path::{Path, PathBuf},
+};
 
 use dotenvy::from_path_override as env_from;
 
@@ -31,19 +35,14 @@ impl Display for Environment {
     }
 }
 
-#[derive(Debug, Clone)]
-struct DotEnvState<'a> {
-    dir: PathBuf,
-    environment: &'a str,
-}
-
 /// Options for DotEnv initialization
 #[derive(Debug, Clone)]
-pub struct DotEnvOptions<'a> {
-    state: DotEnvState<'a>,
+pub struct DotEnvOptions {
+    dir: PathBuf,
+    environment: String,
 }
 
-impl<'a> DotEnvOptions<'a> {
+impl DotEnvOptions {
     /// Set the directory of the `.env` file.
     ///
     /// ## Example
@@ -56,11 +55,11 @@ impl<'a> DotEnvOptions<'a> {
     ///     .dir(current_dir().unwrap())
     ///     .done();
     /// ```
-    pub fn dir(
+    pub fn dir<P: AsRef<Path>>(
         mut self,
-        dir: PathBuf,
+        dir: P,
     ) -> Self {
-        self.state.dir = dir;
+        self.dir = dir.as_ref().to_path_buf();
         self
     }
 
@@ -75,38 +74,31 @@ impl<'a> DotEnvOptions<'a> {
     ///     .environment(Environment::Development.as_str())
     ///     .done();
     /// ```
-    pub fn environment(
+    pub fn environment<S: Into<String>>(
         mut self,
-        environment: &'a str,
+        environment: S,
     ) -> Self {
-        self.state.environment = environment;
+        self.environment = environment.into();
         self
     }
 
     /// Finish initialization.
     pub fn done(self) {
         // .env
-        env_from(self.state.dir.join(".env")).ok();
+        env_from(self.dir.join(".env")).ok();
 
         // .env.local
-        env_from(self.state.dir.join(".env.local")).ok();
+        env_from(self.dir.join(".env.local")).ok();
 
         // .env.<environment>
-        env_from(
-            self.state.dir.join(format!(".env.{}", self.state.environment)),
-        )
-        .ok();
+        env_from(self.dir.join(format!(".env.{}", self.environment))).ok();
 
         // .env.<environment>.local
-        env_from(
-            self.state
-                .dir
-                .join(format!(".env.{}.local", self.state.environment)),
-        )
-        .ok();
+        env_from(self.dir.join(format!(".env.{}.local", self.environment)))
+            .ok();
 
         // RUST_ENV
-        set_var("RUST_ENV", self.state.environment);
+        set_var("RUST_ENV", self.environment);
     }
 }
 
@@ -126,12 +118,13 @@ impl<'a> DotEnvOptions<'a> {
 pub struct DotEnv;
 
 impl DotEnv {
-    pub fn init<'a>() -> DotEnvOptions<'a> {
+    pub fn init() -> DotEnvOptions {
         DotEnvOptions {
-            state: DotEnvState {
-                dir: current_dir().unwrap(),
-                environment: "development",
+            dir: match current_dir() {
+                | Ok(dir) => dir,
+                | Err(_) => PathBuf::from("."),
             },
+            environment: "development".to_string(),
         }
     }
 }

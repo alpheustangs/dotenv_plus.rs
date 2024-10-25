@@ -43,7 +43,7 @@ pub fn get_vars() -> Vec<(String, String)> {
 ///
 /// let environment: String = get_var("RUST_ENV").unwrap();
 /// ```
-pub fn get_var(name: &str) -> Result<String, VarError> {
+pub fn get_var<K: AsRef<OsStr>>(name: K) -> Result<String, VarError> {
     _var(name)
 }
 
@@ -58,9 +58,14 @@ pub fn get_var(name: &str) -> Result<String, VarError> {
 ///
 /// let environment: String = var("RUST_ENV");
 /// ```
-pub fn var(name: &str) -> String {
-    match _var(name) {
+pub fn var<K: AsRef<OsStr>>(name: K) -> String {
+    match _var(&name) {
         | Ok(val) => val,
-        | Err(_) => panic!("Failed to get environment variable: {}", name),
+        | Err(_) => panic!(
+            "Failed to get environment variable: {}",
+            name.as_ref()
+                .to_str()
+                .unwrap_or("Failed to get environment variable.")
+        ),
     }
 }
