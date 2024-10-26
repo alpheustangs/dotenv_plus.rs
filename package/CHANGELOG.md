@@ -1,3 +1,22 @@
+## 0.4.0 (2024-10-26)
+
+### Breaking Changes
+
+- `Environment` enum use `as_code` instead of `as_str` now
+- `Environment` enum use `to_code` instead of `to_string` now
+- `DotEnv` struct use `new()` instead of `init()` now
+
+### What's New
+
+- Add `from_code` function to `Environment` enum
+
+### What's Changed
+
+- `dir` in `DotEnvOptions` struct now accept more types of input
+- `environment` in `DotEnvOptions` struct now accept more types of input
+- `get_var` function now accept more types of input
+- `var` function now accept more types of input
+
 ## 0.3.0 (2024-10-13)
 
 ### Breaking Changes

@@ -13,7 +13,7 @@ use dotenv_plus::{
     var::{set_var, var},
 };
 
-DotEnv::init().done();
+DotEnv::new().done();
 assert_eq!(get_rust_env(), "development");
 set_var("key", "value");
 assert_eq!(var("key"), "value");
