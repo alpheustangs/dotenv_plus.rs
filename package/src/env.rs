@@ -45,14 +45,42 @@ impl Environment {
     }
 }
 
-/// Options for DotEnv initialization
+/// Process will search for and load the `.env` file,
+/// and `.env.xxx` file based on the environment.
+/// For example, the `.env.production` file will be loaded
+/// if the environment is `production`.
+///
+/// ## Example
+///
+/// ```no_run
+/// use dotenv_plus::env::DotEnv;
+///
+/// DotEnv::new().done();
+/// ```
 #[derive(Debug, Clone)]
-pub struct DotEnvOptions {
+pub struct DotEnv {
     dir: PathBuf,
     environment: String,
 }
 
-impl DotEnvOptions {
+impl DotEnv {
+    /// Create a new `DotEnv` struct.
+    pub fn new() -> Self {
+        Self {
+            dir: match current_dir() {
+                | Ok(dir) => dir,
+                | Err(_) => PathBuf::from("."),
+            },
+            environment: "development".to_string(),
+        }
+    }
+
+    /// Create a new `DotEnv` struct.
+    #[deprecated(since = "0.4.0", note = "please use `new()` instead")]
+    pub fn init() -> Self {
+        Self::new()
+    }
+
     /// Set the directory of the `.env` file.
     ///
     /// By default, the current directory is used
@@ -117,29 +145,8 @@ impl DotEnvOptions {
     }
 }
 
-/// Process will search for and load the `.env` file,
-/// and `.env.xxx` file based on the environment.
-/// For example, the `.env.production` file will be loaded
-/// if the environment is `production`.
-///
-/// ## Example
-///
-/// ```no_run
-/// use dotenv_plus::env::DotEnv;
-///
-/// DotEnv::init().done();
-/// ```
-#[derive(Debug, Clone)]
-pub struct DotEnv;
-
-impl DotEnv {
-    pub fn init() -> DotEnvOptions {
-        DotEnvOptions {
-            dir: match current_dir() {
-                | Ok(dir) => dir,
-                | Err(_) => PathBuf::from("."),
-            },
-            environment: "development".to_string(),
-        }
+impl Default for DotEnv {
+    fn default() -> Self {
+        Self::new()
     }
 }

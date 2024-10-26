@@ -15,7 +15,7 @@ fn main() {
         Environment::Development
     };
 
-    DotEnv::init()
+    DotEnv::new()
         .dir(current_dir().unwrap())
         .environment(environment.as_code())
         .done();
@@ -41,7 +41,7 @@ mod tests {
 
     #[test]
     fn main() {
-        DotEnv::init()
+        DotEnv::new()
             .dir(current_dir().unwrap())
             .environment(Environment::Test.as_code())
             .done();
