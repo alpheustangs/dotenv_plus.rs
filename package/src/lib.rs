@@ -28,7 +28,7 @@
 //! };
 //!
 //! DotEnv::init()
-//!     .environment(environment.as_str())
+//!     .environment(environment.as_code())
 //!     .done();
 //! ```
 //!

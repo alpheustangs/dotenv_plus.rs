@@ -1,6 +1,6 @@
 use std::{
     env::current_dir,
-    fmt::Display,
+    io,
     path::{Path, PathBuf},
 };
 
@@ -17,21 +17,31 @@ pub enum Environment {
 }
 
 impl Environment {
-    pub fn as_str(&self) -> &str {
+    /// Get Environment from code.
+    pub fn from_code<C: AsRef<str>>(code: C) -> io::Result<Environment> {
+        match code.as_ref() {
+            | "development" => Ok(Self::Development),
+            | "test" => Ok(Self::Test),
+            | "production" => Ok(Self::Production),
+            | _ => Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "Invalid environment code.",
+            )),
+        }
+    }
+
+    /// Get Environment code as `&str`.
+    pub fn as_code(&self) -> &str {
         match self {
             | Self::Development => "development",
             | Self::Test => "test",
             | Self::Production => "production",
         }
     }
-}
 
-impl Display for Environment {
-    fn fmt(
-        &self,
-        f: &mut std::fmt::Formatter<'_>,
-    ) -> std::fmt::Result {
-        write!(f, "{}", self.as_str())
+    /// Get Environment code as `String`.
+    pub fn to_code(&self) -> String {
+        self.as_code().to_string()
     }
 }
 
@@ -45,6 +55,9 @@ pub struct DotEnvOptions {
 impl DotEnvOptions {
     /// Set the directory of the `.env` file.
     ///
+    /// By default, the current directory is used
+    /// as the directory of the `.env` file.
+    ///
     /// ## Example
     ///
     /// ```no_run
@@ -55,9 +68,9 @@ impl DotEnvOptions {
     ///     .dir(current_dir().unwrap())
     ///     .done();
     /// ```
-    pub fn dir<P: AsRef<Path>>(
+    pub fn dir<Dir: AsRef<Path>>(
         mut self,
-        dir: P,
+        dir: Dir,
     ) -> Self {
         self.dir = dir.as_ref().to_path_buf();
         self
@@ -65,13 +78,15 @@ impl DotEnvOptions {
 
     /// Set the environment.
     ///
+    /// By default, the environment is `development`.
+    ///
     /// ## Example
     ///
     /// ```no_run
     /// use dotenv_plus::env::{DotEnv, Environment};
     ///
     /// DotEnv::init()
-    ///     .environment(Environment::Development.as_str())
+    ///     .environment(Environment::Development.as_code())
     ///     .done();
     /// ```
     pub fn environment<S: Into<String>>(
@@ -82,7 +97,7 @@ impl DotEnvOptions {
         self
     }
 
-    /// Finish initialization.
+    /// Finish the initialization.
     pub fn done(self) {
         // .env
         env_from(self.dir.join(".env")).ok();

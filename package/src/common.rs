@@ -12,7 +12,7 @@ pub fn get_rust_env() -> String {
 
 /// Whether the current environment(`RUST_ENV`) is `development`.
 pub fn is_environment_development() -> bool {
-    get_rust_env() == Environment::Development.to_string()
+    get_rust_env() == Environment::Development.as_code()
 }
 
 /// Alias of [`is_environment_development`].
@@ -22,7 +22,7 @@ pub fn is_dev() -> bool {
 
 /// Whether the current environment(`RUST_ENV`) is `test`.
 pub fn is_environment_test() -> bool {
-    get_rust_env() == Environment::Test.to_string()
+    get_rust_env() == Environment::Test.as_code()
 }
 
 /// Alias of [`is_environment_test`].
@@ -32,7 +32,7 @@ pub fn is_test() -> bool {
 
 /// Whether the current environment(`RUST_ENV`) is `production`.
 pub fn is_environment_production() -> bool {
-    get_rust_env() == Environment::Production.to_string()
+    get_rust_env() == Environment::Production.as_code()
 }
 
 /// Alias of [`is_environment_production`].
