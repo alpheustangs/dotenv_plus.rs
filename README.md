@@ -28,4 +28,4 @@ assert_eq!(get_env("key"), "value");
 
 ## License
 
-This project is MIT licensed, you can find the license file [here](./LICENSE).
+This project is licensed under the terms of the MIT license.
