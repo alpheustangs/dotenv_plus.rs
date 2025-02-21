@@ -1,5 +1,5 @@
 use std::{
-    env::{set_var as _set_var, var as _var, vars, VarError},
+    env::{VarError, set_var as _set_var, var as _var, vars},
     ffi::OsStr,
 };
 
@@ -16,7 +16,7 @@ pub fn set_var<K: AsRef<OsStr>, V: AsRef<OsStr>>(
     key: K,
     value: V,
 ) {
-    _set_var(key, value);
+    unsafe { _set_var(key, value) };
 }
 
 /// Get all environment variables for the current process.
