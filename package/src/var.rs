@@ -48,9 +48,9 @@ pub fn get_vars() -> Vec<(String, String)> {
     vars().collect()
 }
 
-/// Get environment variable,
-/// and have to handle the error manually.
-/// Use [`var`] if you want an automatic handling.
+/// Get environment variable.
+///
+/// Use [`var`] to handle the error automatically.
 ///
 /// ## Example
 ///
@@ -65,7 +65,8 @@ pub fn get_var<K: AsRef<OsStr>>(name: K) -> Result<String, VarError> {
 
 /// Get environment variable as string,
 /// and panic if the environment variable is missing.
-/// Use [`get_var`] if you want to handle the error manually.
+///
+/// Use [`get_var`] to handle the error manually.
 ///
 /// ## Example
 ///

@@ -27,7 +27,7 @@ assert_eq!(get_rust_env(), "development");
 
 set_env("key", "value");
 
-assert_eq!(get_env("key"), "value");
+assert_eq!(var("key"), "value");
 ```
 
 ## License
