@@ -3,6 +3,22 @@ use std::{
     ffi::OsStr,
 };
 
+/// Set multiple environment variable for the current process.
+///
+/// ## Example
+///
+/// ```no_run
+/// use dotenv_plus::var::set_vars;
+///
+/// set_vars(vec![
+///     ("key1", "value1"),
+///     ("key2", "value2")
+/// ]);
+/// ```
+pub fn set_vars(vars: Vec<(&str, &str)>) {
+    vars.iter().for_each(|(k, v)| set_var(k, v));
+}
+
 /// Set environment variable for the current process.
 ///
 /// ## Example

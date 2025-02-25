@@ -14,8 +14,11 @@ use dotenv_plus::{
 };
 
 DotEnv::new().done();
+
 assert_eq!(get_rust_env(), "development");
+
 set_var("key", "value");
+
 assert_eq!(var("key"), "value");
 ```
 

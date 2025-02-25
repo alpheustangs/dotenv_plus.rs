@@ -7,7 +7,7 @@ use dotenv_plus::{
 };
 
 fn main() {
-    let environment: Environment = if cfg!(feature = "prd") {
+    let env: Environment = if cfg!(feature = "prd") {
         Environment::Production
     } else if cfg!(feature = "test") {
         Environment::Test
@@ -15,10 +15,7 @@ fn main() {
         Environment::Development
     };
 
-    DotEnv::new()
-        .dir(current_dir().unwrap())
-        .environment(environment.as_code())
-        .done();
+    DotEnv::new().dir(current_dir().unwrap()).env(env.as_code()).done();
 
     println!("Rust environment: {}", get_rust_env());
     println!("A: {}", var("A"));

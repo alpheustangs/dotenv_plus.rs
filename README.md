@@ -16,13 +16,17 @@ Initialize the environment variables and get different variables with the follow
 
 ```rust
 use dotenv_plus::{
-    env::{DotEnv, set_env, get_env},
-    vars::get_rust_env,
+    env::DotEnv,
+    common::get_rust_env,
+    var::{set_var, var},
 };
 
 DotEnv::new().done();
+
 assert_eq!(get_rust_env(), "development");
+
 set_env("key", "value");
+
 assert_eq!(get_env("key"), "value");
 ```
 

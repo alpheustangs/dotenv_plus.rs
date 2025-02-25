@@ -1,6 +1,5 @@
 use std::{
     env::current_dir,
-    io,
     path::{Path, PathBuf},
 };
 
@@ -9,24 +8,24 @@ use dotenvy::from_path_override as env_from;
 use crate::var::set_var;
 
 /// Rust Environment
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Environment {
     Development,
     Test,
     Production,
+    Custom(String),
 }
 
 impl Environment {
     /// Get Environment from code.
-    pub fn from_code<C: AsRef<str>>(code: C) -> io::Result<Environment> {
-        match code.as_ref() {
-            | "development" => Ok(Self::Development),
-            | "test" => Ok(Self::Test),
-            | "production" => Ok(Self::Production),
-            | _ => Err(io::Error::new(
-                io::ErrorKind::InvalidInput,
-                "Invalid environment code.",
-            )),
+    pub fn from_code<C: AsRef<str>>(code: C) -> Environment {
+        let code: &str = code.as_ref();
+
+        match code {
+            | "development" => Self::Development,
+            | "test" => Self::Test,
+            | "production" => Self::Production,
+            | _ => Self::Custom(code.to_string()),
         }
     }
 
@@ -36,6 +35,7 @@ impl Environment {
             | Self::Development => "development",
             | Self::Test => "test",
             | Self::Production => "production",
+            | Self::Custom(code) => code.as_str(),
         }
     }
 
@@ -75,10 +75,9 @@ impl DotEnv {
         }
     }
 
-    /// Create a new `DotEnv` struct.
-    #[deprecated(since = "0.4.0", note = "please use `new()` instead")]
-    pub fn init() -> Self {
-        Self::new()
+    /// Create a new `DotEnv` struct from an existing `DotEnv` struct.
+    pub fn from(dotenv: DotEnv) -> Self {
+        dotenv
     }
 
     /// Set the directory of the `.env` file.
@@ -92,10 +91,19 @@ impl DotEnv {
     /// use std::env::current_dir;
     /// use dotenv_plus::env::DotEnv;
     ///
-    /// DotEnv::init()
-    ///     .dir(current_dir().unwrap())
+    /// DotEnv::new()
+    ///     .directory(current_dir().unwrap())
     ///     .done();
     /// ```
+    pub fn directory<Dir: AsRef<Path>>(
+        mut self,
+        dir: Dir,
+    ) -> Self {
+        self.dir = dir.as_ref().to_path_buf();
+        self
+    }
+
+    /// Alias of `directory` function.
     pub fn dir<Dir: AsRef<Path>>(
         mut self,
         dir: Dir,
@@ -113,11 +121,20 @@ impl DotEnv {
     /// ```no_run
     /// use dotenv_plus::env::{DotEnv, Environment};
     ///
-    /// DotEnv::init()
+    /// DotEnv::new()
     ///     .environment(Environment::Development.as_code())
     ///     .done();
     /// ```
     pub fn environment<S: Into<String>>(
+        mut self,
+        environment: S,
+    ) -> Self {
+        self.environment = environment.into();
+        self
+    }
+
+    /// Alias of `environment` function.
+    pub fn env<S: Into<String>>(
         mut self,
         environment: S,
     ) -> Self {

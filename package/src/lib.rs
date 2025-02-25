@@ -16,10 +16,10 @@
 //!
 //! Then initialize the environment variables with the following code:
 //!
-//! ```no_run
+//! ```ignore
 //! use dotenv_plus::env::{DotEnv, Environment};
 //!
-//! let environment: Environment = if cfg!(feature = "prd") {
+//! let env: Environment = if cfg!(feature = "prd") {
 //!     Environment::Production
 //! } else if cfg!(feature = "test") {
 //!     Environment::Test
@@ -27,8 +27,8 @@
 //!     Environment::Development
 //! };
 //!
-//! DotEnv::init()
-//!     .environment(environment.as_code())
+//! DotEnv::new()
+//!     .env(env.as_code())
 //!     .done();
 //! ```
 //!
