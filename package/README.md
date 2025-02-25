@@ -1,25 +1,31 @@
 # Dotenv+
 
-A dotenv extension for Rust.
+A dotenv solution for Rust.
 
 ## Quick Start
 
-Initialize the environment variables and get different variables with the following code:
+Write the environment variables in the env files and access them later using the `var` function:
+
+```
+KEY=value
+```
 
 ```rust
 use dotenv_plus::{
-    env::DotEnv,
-    common::get_rust_env,
-    var::{set_var, var},
+    DotEnv,
+    var,
 };
 
-DotEnv::new().done();
+DotEnv::new().run();
 
-assert_eq!(get_rust_env(), "development");
+assert_eq!(var("RUST_ENV"), "production");
 
-set_var("key", "value");
+assert_eq!(var("KEY"), "value");
+```
 
-assert_eq!(var("key"), "value");
+```sh
+# By default, `RUST_ENV` is set to `development`
+RUST_ENV=production cargo run
 ```
 
 ## License

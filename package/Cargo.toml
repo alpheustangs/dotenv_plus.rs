@@ -1,11 +1,11 @@
 [package]
 name = "dotenv_plus"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["Alpheus Tang"]
 edition = "2024"
 rust-version = "1.85.0"
 description = """
-A dotenv extension for Rust
+A dotenv solution for Rust
 """
 readme = "README.md"
 homepage = "https://github.com/alpheustangs/dotenv_plus.rs"
@@ -14,8 +14,8 @@ license = "MIT"
 keywords = [
     "dotenv_plus",
     "dotenv",
-    "extension",
     "env",
+    "solution",
     "util",
 ]
 categories = [

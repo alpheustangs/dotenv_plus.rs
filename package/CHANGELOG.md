@@ -1,3 +1,23 @@
+## 0.5.0 (2025-02-25)
+
+### Breaking Changes
+
+- Remove `common` module
+- Remove `Environment` enum
+- `env` and `var` module move to the top level
+- `DotEnv` function rename:
+    - `done` -> `run`
+
+### What's New
+
+- Add `from` function to `DotEnv`
+- Add `set_vars` function to set multiple environment variables
+
+### What's Changed
+
+- Update Rust edition to `2024`
+- Remove `init` function (deprecated)
+
 ## 0.4.0 (2024-10-26)
 
 ### Breaking Changes

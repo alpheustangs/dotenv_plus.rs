@@ -1,164 +1,164 @@
-use std::{
-    env::current_dir,
-    path::{Path, PathBuf},
-};
+use std::{env::current_dir, path::PathBuf};
 
 use dotenvy::from_path_override as env_from;
 
-use crate::var::set_var;
+use crate::{get_var, set_var};
 
-/// Rust Environment
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum Environment {
-    Development,
-    Test,
-    Production,
-    Custom(String),
-}
-
-impl Environment {
-    /// Get Environment from code.
-    pub fn from_code<C: AsRef<str>>(code: C) -> Environment {
-        let code: &str = code.as_ref();
-
-        match code {
-            | "development" => Self::Development,
-            | "test" => Self::Test,
-            | "production" => Self::Production,
-            | _ => Self::Custom(code.to_string()),
-        }
-    }
-
-    /// Get Environment code as `&str`.
-    pub fn as_code(&self) -> &str {
-        match self {
-            | Self::Development => "development",
-            | Self::Test => "test",
-            | Self::Production => "production",
-            | Self::Custom(code) => code.as_str(),
-        }
-    }
-
-    /// Get Environment code as `String`.
-    pub fn to_code(&self) -> String {
-        self.as_code().to_string()
-    }
-}
-
-/// Process will search for and load the `.env` file,
-/// and `.env.xxx` file based on the environment.
-/// For example, the `.env.production` file will be loaded
-/// if the environment is `production`.
+/// An environment variables initializer.
+///
+/// Loads environment variables from env files in the specified directory.
+/// After initialization, `RUST_ENV` is set to the specified environment,
+/// and `var("RUST_ENV")` can be used to retrieve it.
+///
+/// The following files are loaded in order,
+/// with variables in later files overriding those in earlier ones:
+///
+/// 1. `.env`
+/// 2. `.env.local`
+/// 3. `.env.<environment>`
+/// 4. `.env.<environment>.local`
 ///
 /// ## Example
 ///
 /// ```no_run
-/// use dotenv_plus::env::DotEnv;
+/// use dotenv_plus::DotEnv;
 ///
-/// DotEnv::new().done();
+/// DotEnv::new().run();
 /// ```
 #[derive(Debug, Clone)]
 pub struct DotEnv {
     dir: PathBuf,
-    environment: String,
+    env: String,
 }
 
 impl DotEnv {
-    /// Create a new `DotEnv` struct.
+    /// Creates a new instance.
+    ///
+    /// ## Example
+    ///
+    /// ```no_run
+    /// use dotenv_plus::DotEnv;
+    ///
+    /// DotEnv::new().run();
+    /// ```
     pub fn new() -> Self {
         Self {
             dir: match current_dir() {
                 | Ok(dir) => dir,
                 | Err(_) => PathBuf::from("."),
             },
-            environment: "development".to_string(),
+            env: match get_var("RUST_ENV") {
+                | Ok(env) => env,
+                | Err(_) => "development".to_string(),
+            },
         }
     }
 
-    /// Create a new `DotEnv` struct from an existing `DotEnv` struct.
+    /// Creates a new instance from an existing one.
+    ///
+    /// ## Example
+    ///
+    /// ```no_run
+    /// use dotenv_plus::DotEnv;
+    ///
+    /// let prev: DotEnv = DotEnv::new();
+    ///
+    /// DotEnv::from(prev).run();
+    /// ```
     pub fn from(dotenv: DotEnv) -> Self {
         dotenv
     }
 
-    /// Set the directory of the `.env` file.
+    /// Sets the directory containing the env files.
     ///
-    /// By default, the current directory is used
-    /// as the directory of the `.env` file.
+    /// By default, it uses[`std::env::current_dir`].
     ///
     /// ## Example
     ///
     /// ```no_run
     /// use std::env::current_dir;
-    /// use dotenv_plus::env::DotEnv;
+    ///
+    /// use dotenv_plus::DotEnv;
     ///
     /// DotEnv::new()
     ///     .directory(current_dir().unwrap())
-    ///     .done();
+    ///     .run();
     /// ```
-    pub fn directory<Dir: AsRef<Path>>(
+    pub fn directory<Dir: Into<PathBuf>>(
         mut self,
         dir: Dir,
     ) -> Self {
-        self.dir = dir.as_ref().to_path_buf();
+        self.dir = dir.into();
         self
     }
 
-    /// Alias of `directory` function.
-    pub fn dir<Dir: AsRef<Path>>(
+    /// Alias for [`DotEnv::directory`] function.
+    pub fn dir<Dir: Into<PathBuf>>(
         mut self,
         dir: Dir,
     ) -> Self {
-        self.dir = dir.as_ref().to_path_buf();
+        self.dir = dir.into();
         self
     }
 
     /// Set the environment.
     ///
-    /// By default, the environment is `development`.
+    /// By default, it checks the `RUST_ENV` environment variable.
+    /// If it is missing, it defaults to `development`.
     ///
     /// ## Example
     ///
     /// ```no_run
-    /// use dotenv_plus::env::{DotEnv, Environment};
+    /// use dotenv_plus::DotEnv;
     ///
     /// DotEnv::new()
-    ///     .environment(Environment::Development.as_code())
-    ///     .done();
+    ///     .environment("test")
+    ///     .run();
     /// ```
     pub fn environment<S: Into<String>>(
         mut self,
-        environment: S,
+        env: S,
     ) -> Self {
-        self.environment = environment.into();
+        self.env = env.into();
         self
     }
 
-    /// Alias of `environment` function.
+    /// Alias for [`DotEnv::environment`] function.
     pub fn env<S: Into<String>>(
         mut self,
-        environment: S,
+        env: S,
     ) -> Self {
-        self.environment = environment.into();
+        self.env = env.into();
         self
     }
 
-    /// Finish the initialization.
-    pub fn done(self) {
-        // .env
-        env_from(self.dir.join(".env")).ok();
+    /// Loads environment variables and finalizes initialization.
+    ///
+    /// ## Example
+    ///
+    /// ```no_run
+    /// use dotenv_plus::DotEnv;
+    ///
+    /// DotEnv::new().run();
+    /// ```
+    pub fn run(self) {
+        let files = vec![
+            // .env
+            self.dir.join(".env"),
+            // .env.local
+            self.dir.join(".env.local"),
+            // .env.<environment>
+            self.dir.join(format!(".env.{}", self.env)),
+            // .env.<environment>.local
+            self.dir.join(format!(".env.{}.local", self.env)),
+        ];
 
-        // .env.local
-        env_from(self.dir.join(".env.local")).ok();
-
-        // .env.<environment>
-        env_from(self.dir.join(format!(".env.{}", self.environment))).ok();
-
-        // .env.<environment>.local
-        env_from(self.dir.join(format!(".env.{}.local", self.environment)))
-            .ok();
+        for file in files {
+            env_from(file).ok();
+        }
 
         // RUST_ENV
-        set_var("RUST_ENV", self.environment);
+        set_var("RUST_ENV", self.env);
     }
 }
 

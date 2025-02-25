@@ -1,58 +1,38 @@
 //! # Dotenv+
 //!
-//! A dotenv extension for Rust.
+//! A dotenv solution for Rust.
 //!
-//! ## Define Different Environments
+//! ## Quick Start
 //!
-//! To define different environments,
-//! you may use the `features` attribute in `Cargo.toml`:
+//! Write the environment variables in the env files
+//! and access them later using the `var` function:
 //!
-//! ```toml
-//! [features]
-//! dev = []
-//! test = []
-//! prd = []
+//! ```txt
+//! KEY=value
 //! ```
-//!
-//! Then initialize the environment variables with the following code:
-//!
-//! ```ignore
-//! use dotenv_plus::env::{DotEnv, Environment};
-//!
-//! let env: Environment = if cfg!(feature = "prd") {
-//!     Environment::Production
-//! } else if cfg!(feature = "test") {
-//!     Environment::Test
-//! } else {
-//!     Environment::Development
-//! };
-//!
-//! DotEnv::new()
-//!     .env(env.as_code())
-//!     .done();
-//! ```
-//!
-//! And run the process with the environment planned to be used:
-//!
-//! ```bash
-//! cargo run --features dev
-//! ```
-//!
-//! You may setup and read different environment variables
-//! with `set_var`, `get_vars`, `get_var` and `var`:
 //!
 //! ```no_run
-//! use dotenv_plus::var::{set_var, var};
+//! use dotenv_plus::{
+//!     DotEnv,
+//!     var,
+//! };
 //!
-//! set_var("key", "value");
-//! assert_eq!(var("key"), "value");
+//! DotEnv::new().run();
+//!
+//! assert_eq!(var("RUST_ENV"), "production");
+//!
+//! assert_eq!(var("KEY"), "value");
+//! ```
+//!
+//! ```sh
+//! # By default, `RUST_ENV` is set to `development`
+//! RUST_ENV=production cargo run
 //! ```
 
-/// Dotenv process related functions
-pub mod env;
+pub(crate) mod env;
 
-/// Read and write environment variables in the current process.
-pub mod var;
+pub(crate) mod var;
 
-/// Common functions
-pub mod common;
+pub use env::*;
+
+pub use var::*;
